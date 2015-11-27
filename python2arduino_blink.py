@@ -6,9 +6,11 @@
 
 
 import serial
+import time
 
 print('running python2arduino_blink.py')
 
 arduino = serial.Serial('/dev/ttyACM0', 9600)
+time.sleep(2)
 num = '3'
 arduino.write(bytes(num.encode('ascii')))
