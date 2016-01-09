@@ -10,6 +10,16 @@ Along with the end results (drawings), this project is a way to learn more about
 
 ##Software:
 * [Adafruit motor shield library](https://github.com/adafruit/Adafruit_Motor_Shield_V2_Library) to control motor with Arduino
+* 
+
+###ArduinoCode:
+* StepperTest - from Adafruit
+* receiveFromPython - listens over USB to input from python2arduino_blink.py
+* StepperControlFromPython - listens over USB for motor commands
+
+####Python Code:
+* python2arduino_blink.py - code to send Arduino the number of times to blink LED
+* python2arduino_motor.py - code to send Arduino motor commands
 
 
 
