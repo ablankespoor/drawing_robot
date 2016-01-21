@@ -15,8 +15,8 @@ import time
 
 print('running python2arduino_motor.py')
 
-arduino = serial.Serial('/dev/ttyACM1', 9600)
+arduino = serial.Serial('/dev/ttyACM0', 9600)
 time.sleep(1)
-num = '2'
+num = '80'
 arduino.write(bytes(num.encode('ascii')))
 

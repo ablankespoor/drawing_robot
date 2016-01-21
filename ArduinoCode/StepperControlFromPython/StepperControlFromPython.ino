@@ -1,10 +1,11 @@
 /* 
 StepperControlFromPython.ino
 
-Based on the StepperTest.ino code from the Adafruit Motor Shield library.
+Listens for motor commands from the Raspberry Pi over USB.  This
+code assumes a motor shield is connected and two stepper motors 
+can be controlled by the Arduino.  
 
-It accepts commands from a Python code run on the 
-Raspberry Pi - python2arduino_motor.py
+Currently for use with Python code: make_square_path.py
 
 For use with the Adafruit Motor Shield v2 
 ---->	http://www.adafruit.com/products/1438
@@ -18,10 +19,14 @@ For use with the Adafruit Motor Shield v2
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
 
-// Connect a stepper motor with 200 steps per revolution (1.8 degree)
-// to motor port #1 (M1 and M2)
-Adafruit_StepperMotor *motor1 = AFMS.getStepper(200, 1);
+// Connect a stepper motors with 200 steps per revolution (1.8 degree)
+// Left motor is connected to M1
+// Right motor is connected to M2
+Adafruit_StepperMotor *motor_left = AFMS.getStepper(200, 1);
+Adafruit_StepperMotor *motor_right = AFMS.getStepper(200, 2);
 
+
+const int led_pin = 13;
 
 void setup() {
   Serial.begin(9600);           // set up Serial library at 9600 bps
@@ -30,15 +35,18 @@ void setup() {
   AFMS.begin();  // create with the default frequency 1.6KHz
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
   
-  motor1->setSpeed(10);  // 10 rpm   
+  motor_left->setSpeed(10);  // 10 rpm  
+  
+  pinMode(led_pin,OUTPUT); 
 }
 
 void loop() {
   
     if (Serial.available())  {
       motorCommand(Serial.read() - '0');
+      light(Serial.read() - '0');
     }
-     
+    delay(5000);
     // Serial.println("Single coil steps");
     //motor1->step(numSteps, FORWARD, SINGLE); 
 
@@ -46,5 +54,14 @@ void loop() {
 
 
 void motorCommand(int n) {
-  motor1->step(n*100,FORWARD, SINGLE);
+  motor_left->step(n*100,FORWARD, SINGLE);
+}
+
+void light(int n) {
+  for (int i = 0; i<n; i++) {
+    digitalWrite(led_pin,HIGH);
+    delay(1000);
+    digitalWrite(led_pin,LOW);
+    delay(1000);
+  }
 }
