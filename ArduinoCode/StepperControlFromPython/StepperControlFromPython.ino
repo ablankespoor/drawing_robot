@@ -26,30 +26,69 @@ Adafruit_StepperMotor *motor_left = AFMS.getStepper(200, 1);
 Adafruit_StepperMotor *motor_right = AFMS.getStepper(200, 2);
 
 
-const int led_pin = 13;
+
+int n_steps_left = 0;
+int n_steps_right = 0;
+int serial_data = 0;
+int in_byte = 0;
 
 void setup() {
   Serial.begin(9600);           // set up Serial library at 9600 bps
+  delay(100);
   //Serial.println("Stepper test!");
 
   AFMS.begin();  // create with the default frequency 1.6KHz
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
   
-  motor_left->setSpeed(10);  // 10 rpm  
+  motor_left->setSpeed(10);  // 10 rpm  This is a power input...
+  motor_right->setSpeed(10);
   
-  pinMode(led_pin,OUTPUT); 
+
 }
 
 void loop() {
   
-    if (Serial.available())  {
-      motorCommand(Serial.read() - '0');
-      light(Serial.read() - '0');
+    if (Serial.available() > 0)  {
+      // read one byte (ascii) and subtracts 48 to get 0-9 integer   (the Serial.read() - '0' part)
+      // desired = previous*10 + current
+      //n_steps_left = n_steps_left*10 + Serial.read() - '0';  
+      //Serial.print("Arduino received: ");
+      //Serial.println(n_steps_left);
+      n_steps_left = getSerial();
+      Serial.print("Arduino received: ");
+      Serial.print(n_steps_left);
+      Serial.println(" left");
+      n_steps_right = getSerial();
+      Serial.print("Arduino received: ");
+      Serial.print(n_steps_right);
+      Serial.println(" right");
+      
+      
+      Serial.println(" ");     
     }
-    delay(5000);
-    // Serial.println("Single coil steps");
-    //motor1->step(numSteps, FORWARD, SINGLE); 
 
+}
+
+
+
+// Read the bytes from the over the USB, one at a time
+// Accumulate the result in serial_data and return 
+int getSerial() {
+     serial_data = 0;
+     // while not the end of number:  'n'
+     // 'n' --> ascii = 110 
+     while (in_byte != 110) 
+     { 
+        in_byte = Serial.read();   // if Serial.read() is empty, it returns -1
+        if (in_byte > 0 && in_byte != 110) 
+          {
+           // data = previous_byte*10 + new_byte - '0'
+           serial_data = serial_data * 10 + in_byte - '0';
+          }  
+     }
+     
+     in_byte = 0;
+     return serial_data;  
 }
 
 
@@ -57,11 +96,3 @@ void motorCommand(int n) {
   motor_left->step(n*100,FORWARD, SINGLE);
 }
 
-void light(int n) {
-  for (int i = 0; i<n; i++) {
-    digitalWrite(led_pin,HIGH);
-    delay(1000);
-    digitalWrite(led_pin,LOW);
-    delay(1000);
-  }
-}

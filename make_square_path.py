@@ -13,7 +13,8 @@
 
 
 
-print('running: make_square_path.py')
+print('Running: make_square_path.py')
+print()
 
 
 import math
@@ -34,11 +35,19 @@ dm = 406.4                      # [mm] distance between motor shafts
 motor_steps = 200               # number of steps per revolution (1.8 degrees)
 
 # setup the arduino interface
-arduino = serial.Serial('/dev/ttyACM0', 9600)
-time.sleep(2)   # let the connection settle
+a_locations = ['/dev/ttyACM0','/dev/ttyACM1']
+for device in a_locations:
+    try:
+        arduino = serial.Serial(device, 9600)
+        print("Connected to Arduino on "+device)
+        break
+    except:
+        print("Failed to connect on "+device)
+            
+#time.sleep(1)   # let the connection settle
 
 print()
-print(str(xy[0])+'(1)       <----        '+str(xy[3])+'(4)')
+print(str(xy[0])+'(1)    <----        '+str(xy[3])+'(4)')
 print('   |                             ^')
 print('   |                             |')
 print('   v                             |')
@@ -70,28 +79,38 @@ def length2Steps(del_left,del_right,r,steps):
     mm2step = steps / (2 * 3.14 * r)
     steps_left  = del_left * mm2step
     steps_right = del_right * mm2step
-    print(str(steps_left)+' left motor rotation')
-    print(str(steps_right)+' right motor rotation')
+    print(str(steps_left)+' left motor steps')
+    print(str(steps_right)+' right motor steps')
     return round(steps_left), round(steps_right)
 
 def sendSteps2Arduino(steps_left,steps_right):
-    print('sending '+str(steps_left)+' steps to left motor')
-    print('sending '+str(steps_right)+' steps to right motor')
+
 
     if steps_left > 0:
-        direction_left = 'FORWARD'
+        direction_left = 'F'
     elif steps_left < 0:
-        direction_left = 'BACKWARD'
+        direction_left = 'B'
 
     if steps_right > 0:
-        direction_right = 'FORWARD'
+        direction_right = 'F'
     elif steps_right < 0:
-        direction_right = 'BACKWARD'
+        direction_right = 'B'
 
     
 
+    # send left motor steps and direction
+    arduino.write(str(steps_left).encode('ascii'))
+    arduino.write('n'.encode('ascii'))
+    print('PI -> ARDUINO: '+str(steps_left)+' left')
+    
+    # send right motor steps and direction
+    arduino.write(str(steps_right).encode('ascii'))
+    arduino.write('n'.encode('ascii'))
+    print('PI -> ARDUINO: '+str(steps_right)+' right')
+    
 
-    arduino.write(bytes(str(steps_left).encode('ascii')))
+    # wait for acknowledge from Arduino
+    
     return
 
 
@@ -112,7 +131,7 @@ for point in range(1,2):
     
     print()
 
-print('moving to point ' + str(xy[0]))
+# print('moving to point ' + str(xy[0]))
 
 arduino.close()
 
