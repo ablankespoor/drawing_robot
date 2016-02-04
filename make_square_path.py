@@ -23,7 +23,7 @@ import serial
 import time
 
 # define points of the square
-xy = np.array([[0, 0],[0,-20],[20,-20],[20,0]])    # desired movement
+xy = np.array([[0, 0],[0,-20],[20,-20],[20,0],[0,0]])    # desired movement
 offset = np.array([203, -260])                     # offset to center of drawing
 xy = xy + offset
 
@@ -110,6 +110,7 @@ def sendSteps2Arduino(steps_left,steps_right):
     
 
     # wait for acknowledge from Arduino
+    #print(arduino.readline())
     
     return
 
@@ -131,7 +132,7 @@ for point in range(1,2):
     
     print()
 
-# print('moving to point ' + str(xy[0]))
+
 
 arduino.close()
 
