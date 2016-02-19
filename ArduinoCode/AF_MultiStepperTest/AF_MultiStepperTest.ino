@@ -7,50 +7,77 @@
 // And AccelStepper with AFMotor support (https://github.com/adafruit/AccelStepper)
 // Public domain!
 
-#include <AccelStepper.h>
-#include <AFMotor.h>
+// Modified by Adam to test motors for drawing robot
 
-// two stepper motors one on each port
-AF_Stepper motor1(200, 1);
-AF_Stepper motor2(200, 2);
+#include <AccelStepper.h>
+#include <Adafruit_MotorShield.h>
+#include <Wire.h>
+#include "utility/Adafruit_PWMServoDriver.h"
+
+
+// Create the motor shield object with the default I2C address
+Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
+
+// Connect a stepper motors with 200 steps per revolution (1.8 degree)
+// Left motor is connected to M1
+// Right motor is connected to M2
+Adafruit_StepperMotor *motor_left  = AFMS.getStepper(200, 1);
+Adafruit_StepperMotor *motor_right = AFMS.getStepper(200, 2);
 
 // you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
 // wrappers for the first motor!
 void forwardstep1() {  
-  motor1.onestep(FORWARD, SINGLE);
+  motor_left->onestep(FORWARD, SINGLE);
 }
 void backwardstep1() {  
-  motor1.onestep(BACKWARD, SINGLE);
+  motor_left->onestep(BACKWARD, SINGLE);
 }
 // wrappers for the second motor!
 void forwardstep2() {  
-  motor2.onestep(FORWARD, SINGLE);
+  motor_right->onestep(FORWARD, SINGLE);
 }
 void backwardstep2() {  
-  motor2.onestep(BACKWARD, SINGLE);
+  motor_right->onestep(BACKWARD, SINGLE);
 }
 
 // Motor shield has two motor ports, now we'll wrap them in an AccelStepper object
-AccelStepper stepper1(forwardstep1, backwardstep1);
-AccelStepper stepper2(forwardstep2, backwardstep2);
+AccelStepper stepper_left(forwardstep1, backwardstep1);
+AccelStepper stepper_right(forwardstep2, backwardstep2);
 
 void setup()
 {  
-    stepper1.setMaxSpeed(200.0);
-    stepper1.setAcceleration(100.0);
-    stepper1.moveTo(24);
+    AFMS.begin();
     
-    stepper2.setMaxSpeed(300.0);
-    stepper2.setAcceleration(100.0);
-    stepper2.moveTo(1000000);
+    stepper_left.setMaxSpeed(200.0);
+    stepper_left.setAcceleration(100.0);
+    stepper_left.moveTo(100);
+    
+    stepper_right.setMaxSpeed(200.0);
+    stepper_right.setAcceleration(100.0);
+    stepper_right.moveTo(100);
     
 }
 
 void loop()
 {
-    // Change direction at the limits
-    if (stepper1.distanceToGo() == 0)
-	stepper1.moveTo(-stepper1.currentPosition());
-    stepper1.run();
-    stepper2.run();
+    
+
+  
+    // Change direction at the limits - it goes back and forth
+//    if (stepper_left.distanceToGo() == 0)
+//	stepper_left.moveTo(-stepper_left.currentPosition());
+//
+//    if (stepper_right.distanceToGo() == 0)
+//        stepper_right.moveTo(-stepper_right.currentPosition());
+        
+    stepper_left.run();
+    stepper_right.run();
+    
+    if (stepper_left.distanceToGo() == 0)
+    {
+        stepper_left.disableOutputs();
+        stepper_right.disableOutputs();
+    }
+    
+
 }
