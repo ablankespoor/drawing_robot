@@ -44,7 +44,7 @@ for device in a_locations:
     except:
         print("Failed to connect on "+device)
             
-time.sleep(1)   # let the connection settle
+time.sleep(2)   # let the connection settle
 
 print()
 print(str(xy[0])+'(1)    <----        '+str(xy[3])+'(4)')

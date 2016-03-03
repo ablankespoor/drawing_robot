@@ -88,10 +88,10 @@ void loop()
     n_steps_left  = getSerial();
     n_steps_right = getSerial();
     
-//    Serial.print("left   ");
-//    Serial.print(n_steps_left);
-//    Serial.print("      right   ");
-//    Serial.println(n_steps_right);
+    Serial.print("left   ");
+    Serial.print(n_steps_left);
+    Serial.print("      right   ");
+    Serial.println(n_steps_right);
     delay(100);
     
     stepper_left.move(n_steps_left);
