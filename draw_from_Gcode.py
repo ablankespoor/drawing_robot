@@ -88,7 +88,7 @@ def sendSteps2Arduino(steps_left,steps_right):
 
 # Iterate through the xy array, calculate the change in lengths, and send
 # the commands to the Arduino
-for point in range(1,len(xy)):
+for point in range(1,15):  #len(xy)):
     print('moving to point ' + str(point+1) + '/' + str(xy.shape[0]) + '   ' + str(xy[point]))
     
     # Find the change in the string length for left and right
@@ -99,7 +99,7 @@ for point in range(1,len(xy)):
     sendSteps2Arduino(steps_left,steps_right)
 
     # Pause for user input
-    input("Press Enter to continue")    
+    #input("Press Enter to continue")    
 
     time.sleep(.5)
     
@@ -108,7 +108,8 @@ for point in range(1,len(xy)):
 
 
 # Tell the Arduino to release the motors
-#arduino.write('r'.encode('ascii'))
+print('PI -> ARDUINO: release')
+arduino.write('r'.encode('ascii'))
 
 
 arduino.close()

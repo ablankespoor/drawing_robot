@@ -37,6 +37,7 @@ int serial_data = 0;
 int in_byte = 0;
 int left_done = 1;
 int right_done = 1;
+int count = 2;
 
 
 // AccelStepper wrappers for the motors
@@ -68,13 +69,11 @@ void setup()
     AFMS.begin();
     
     // Set some motor parameters
-    stepper_left.setMaxSpeed(200.0);
-    stepper_left.setAcceleration(100.0);
-    //stepper_left.moveTo(-500);
+    stepper_left.setMaxSpeed(200.0);        // originally 200, from example
+    stepper_left.setAcceleration(100.0);    // originally 100,
     
-    stepper_right.setMaxSpeed(200.0);
-    stepper_right.setAcceleration(100.0);
-    //stepper_right.moveTo(-500);
+    stepper_right.setMaxSpeed(200.0);       // originally 200, from example
+    stepper_right.setAcceleration(100.0);   // originally 100
     
 }    // end of setup()
 
@@ -83,49 +82,32 @@ void setup()
 void loop()
 {
   // If data is in the USB buffer
-  if (Serial.available() > 0 && left_done == 1 && right_done == 1)
+  if (Serial.available() > 0)
   {
     n_steps_left  = getSerial();
     n_steps_right = getSerial();
     
-    Serial.print("left   ");
+    Serial.print("count  ");
+    Serial.print(count);
+    Serial.print("    left  ");
     Serial.print(n_steps_left);
-    Serial.print("      right   ");
+    Serial.print("    right  ");
     Serial.println(n_steps_right);
     delay(100);
+    count = count + 1;
     
     stepper_left.move(n_steps_left);
     stepper_right.move(n_steps_right);
     
-    // Reset the "done" variables
-    left_done  = 0;
-    right_done = 0;
+
   }
 
   
   stepper_left.run();
   stepper_right.run();
   
-  // Check if the current movement is complete
-  if (stepper_left.distanceToGo() == 0)
-    {
-      left_done = 1;
-      motor_left->release();
-    }
-  if (stepper_right.distanceToGo() == 0)
-    {
-      right_done = 1;
-      motor_right->release();
-    }
-  
-//  if (stepper_left.distanceToGo() != 0 && stepper_right.distanceToGo() != 0)
-//  {
-//    Serial.print("left distance =  ");
-//    Serial.print(stepper_left.distanceToGo());
-//    Serial.print("      right distance =  ");
-//    Serial.println(stepper_right.distanceToGo());
-//  }
 
+  
   
   
 }    // end of loop()
@@ -157,11 +139,11 @@ int getSerial() {
               serial_data = 0;             
            }  
         } 
-//       else if (in_byte == 114){
-//           motor_left->release();
-//           motor_right->release();
-//           Serial.println("release() sent");
-//       }
+       else if (in_byte == 114){
+           motor_left->release();
+           motor_right->release();
+           Serial.println("release() sent");
+       }
      }
      
      in_byte = 0;
