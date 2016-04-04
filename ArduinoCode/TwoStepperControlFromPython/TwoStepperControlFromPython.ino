@@ -33,11 +33,14 @@ Adafruit_StepperMotor *motor_right = AFMS.getStepper(200, 2);
 // Variables
 int n_steps_left = 0;
 int n_steps_right = 0;
-int serial_data = 0;
-int in_byte = 0;
-int left_done = 1;
-int right_done = 1;
 int count = 2;
+
+// message is the data sent over the USB, my diy communication protocol
+// message: [count, 'n', L steps, 'n', R steps, 'n', end]
+int message[3]={0,0,0};
+
+
+
 
 
 // AccelStepper wrappers for the motors
@@ -81,33 +84,48 @@ void setup()
 
 void loop()
 {
-  // If data is in the USB buffer
+
   if (Serial.available() > 0)
   {
-    n_steps_left  = getSerial();
-    n_steps_right = getSerial();
+    //Serial.println("go to getSerial2()");
+    getSerial2(message);
+    //Serial.println("return from getSerial2()");
+    Serial.print(message[0]);
+    Serial.print(" ");
+    Serial.print(message[1]);
+    Serial.print(" ");
+    Serial.println                                                                                                                (message[2]);
     
-    Serial.print("count  ");
-    Serial.print(count);
-    Serial.print("    left  ");
-    Serial.print(n_steps_left);
-    Serial.print("    right  ");
-    Serial.println(n_steps_right);
-    delay(100);
-    count = count + 1;
+   
+    // Run the motors here
     
-    stepper_left.move(n_steps_left);
-    stepper_right.move(n_steps_right);
+    
+    
+    // Reset the message
+    for (int i=0; i<3; i++){
+      message[i] = 0;
+    }
     
 
   }
 
-  
-  stepper_left.run();
-  stepper_right.run();
-  
+ 
+ 
+//  // If data is in the USB buffer
+//  if (Serial.available() > 0)
+//  {
+//    n_steps_left  = getSerial();
+//    n_steps_right = getSerial();
+//    
+//    stepper_left.move(n_steps_left);
+//    stepper_right.move(n_steps_right);
+//    
+//
+//  }
 
   
+//  stepper_left.run();
+//  stepper_right.run();
   
   
 }    // end of loop()
@@ -118,37 +136,85 @@ void loop()
 // FUNCTION DEFINITIONS
 //////////////////////////////
 
-// Read the bytes from the USB, one at a time
-// Accumulate the result in serial_data and return 
-int getSerial() {
-     serial_data = 0;
-     int pos_neg_flag = 1;
-     // while not the end of number:  'n'
-     // 'n' --> ascii = 110 
-     while (in_byte != 110) 
-     { 
-        in_byte = Serial.read();   // if Serial.read() is empty, it returns -1
-        if (in_byte > 0 && in_byte != 110 && in_byte != 114) 
-        {
-           // data = previous_byte*10 + new_byte - '0'
-           serial_data = serial_data * 10 + in_byte - '0';
-           
-           // deal with negative steps
-           if (serial_data == -3) {
-              pos_neg_flag = -1; 
-              serial_data = 0;             
-           }  
-        } 
-       else if (in_byte == 114){
-           motor_left->release();
-           motor_right->release();
-           Serial.println("release() sent");
-       }
-     }
-     
-     in_byte = 0;
 
-     return serial_data * pos_neg_flag;  
+void getSerial2(int m[]){
+  int in_byte = 0;
+  int index = 0;
+  int pos_neg_x = 1;
+  
+  // Read through the whole message (not 109 = 'm')
+  while (in_byte != 109){
+    in_byte = Serial.read();
+    if (in_byte > 0 && in_byte != 109 && in_byte != 110 && in_byte != 114){
+      
+      m[index] = m[index]*10 + in_byte - '0';
+      
+      // Swap the pos/neg multiplier if the last in_byte was neg
+      if (m[index] == -3){
+        pos_neg_x = -1;
+        m[index] = 0;
+      }
+      
+//      Serial.print(m[0]);
+//      Serial.print("  ");
+//      Serial.print(m[1]);
+//      Serial.print("  ");
+//      Serial.println(m[2]);
+    }
+    // When the current read is done, account for negatives
+    if (in_byte == 110){
+      m[index] = m[index] * pos_neg_x;
+      pos_neg_x = 1;
+      index++;
+    }
+    // Release the motors
+    if (in_byte == 114){
+      motor_left->release();
+      motor_right->release();
+      Serial.println("release() sent");
+    }
+      
+  } // end of "message"
+  
+  
+  
 }
+
+
+
+//// Read the bytes from the USB, one at a time
+//// Accumulate the result in serial_data and return 
+//int getSerial() {
+//     int serial_data = 0;     // serial data, [count, motor, steps, cksm, end]
+//     int in_byte = 0;         // single byte, from serial buffer, bytes read one at a time
+//     int pos_neg_flag = 1;    // pos = 1 and neg = -1 (used as a multiplier)
+//     
+//     // while not the end of number:  'n'
+//     // 'n' --> ascii = 110 
+//     while (in_byte != 110) 
+//     { 
+//        in_byte = Serial.read();   // if Serial.read() is empty, it returns -1
+//        if (in_byte > 0 && in_byte != 110 && in_byte != 114) 
+//        {
+//           // data = previous_byte*10 + new_byte - '0'
+//           serial_data = serial_data * 10 + in_byte - '0';
+//           
+//           // deal with negative steps
+//           if (serial_data == -3) {
+//              pos_neg_flag = -1; 
+//              serial_data = 0;             
+//           }  
+//        } 
+//       else if (in_byte == 114){
+//           motor_left->release();
+//           motor_right->release();
+//           Serial.println("release() sent");
+//       }
+//     }
+//     
+//     in_byte = 0;
+//
+//     return serial_data * pos_neg_flag;  
+//}
 
 
