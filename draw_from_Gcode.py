@@ -102,12 +102,15 @@ def sendMessage2Arduino(point,steps_L,steps_R):
     [pnt,l,r] = getArduinoResponse()
     print('ARDUINO -> PI: '+pnt+' '+l+' '+r)
 
+##    if int(pnt)==point+1:
+##        print('matching response')
+
 
 
 
 # Iterate through the xy array, calculate the change in lengths, and send
 # the commands to the Arduino
-for point in range(1,3):  #len(xy)):
+for point in range(1,len(xy)):
     print('moving to point ' + str(point+1) + '/' + str(xy.shape[0]) + '   ' + str(xy[point]))
     
     # Find the change in the string length for left and right
@@ -126,7 +129,7 @@ for point in range(1,3):  #len(xy)):
     print()
 
 # Test for sending messages
-sendMessage2Arduino(3,-10,10)
+#sendMessage2Arduino(3,-10,10)
 
 # Tell the Arduino to release the motors
 #print('PI -> ARDUINO: release')

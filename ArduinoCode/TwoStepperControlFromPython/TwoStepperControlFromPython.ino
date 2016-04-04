@@ -87,17 +87,19 @@ void loop()
 
   if (Serial.available() > 0)
   {
-    //Serial.println("go to getSerial2()");
+
     getSerial2(message);
-    //Serial.println("return from getSerial2()");
+
     Serial.print(message[0]);
     Serial.print(" ");
     Serial.print(message[1]);
     Serial.print(" ");
-    Serial.println                                                                                                                (message[2]);
+    Serial.println(message[2]);
     
    
-    // Run the motors here
+    // Specify the next motor command
+    stepper_left.move(message[1]);
+    stepper_right.move(message[2]);
     
     
     
@@ -108,6 +110,10 @@ void loop()
     
 
   }
+  
+  // Move the motors
+  stepper_left.run();
+  stepper_right.run();
 
  
  
