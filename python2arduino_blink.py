@@ -1,6 +1,7 @@
 #! bin/python3
 #
 # Initial Python program to interface with the Arduino over USB
+# Load PythonControlBlink.ino on the Arduino
 #
 # The Arduino is on /dev/ttyACM0
 
