@@ -24,8 +24,8 @@ import time
 
 # Load the trajectory from the .csv file (gcode derived)
 file_path = 'DrawingInputFiles/'
-#file_name = 'PelotonLogoXY.csv'
-file_name = 'circleXY.csv'
+file_name = 'PelotonLogoXY.csv'
+#file_name = 'circleXY.csv'
 xy = np.genfromtxt(file_path+file_name, delimiter=',')
 offset = np.array([203,-260])   # offset the pen to the center of drawing
 xy = xy + offset
@@ -81,6 +81,15 @@ def getArduinoResponse():
     pnt = r[2:space1]
     l = r[space1+1:space2]
     r = r[space2+1:-5]
+    print('ARDUINO -> PI: '+pnt+' '+l+' '+r)
+    # Wait here for motors to finish moving
+##    motor_done = "no"
+##    while (motor_done == "no"):
+##        motor_done = str(arduino.readline())[2:5]
+##        print(motor_done)
+    #r2 = str(arduino.readline())
+    #print(r2)
+    
     return pnt,l,r
 
 
@@ -100,7 +109,7 @@ def sendMessage2Arduino(point,steps_L,steps_R):
 
     # Wait for a response from arduino, with correct data...
     [pnt,l,r] = getArduinoResponse()
-    print('ARDUINO -> PI: '+pnt+' '+l+' '+r)
+    #print('ARDUINO -> PI: '+pnt+' '+l+' '+r)
 
 ##    if int(pnt)==point+1:
 ##        print('matching response')
@@ -133,7 +142,9 @@ for point in range(1,len(xy)):
 
 # Tell the Arduino to release the motors
 #print('PI -> ARDUINO: release')
-#arduino.write('r'.encode('ascii'))
+arduino.write('r'.encode('ascii'))
+arduino.write('m'.encode('ascii'))
+print(arduino.readline())
 
 
 arduino.close()

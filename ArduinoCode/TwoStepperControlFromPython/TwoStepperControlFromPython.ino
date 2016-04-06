@@ -19,7 +19,7 @@ uses the Adafruit Motor Shield vs http://www.adafruit.com/products/1438
 #include <AccelStepper.h>
 #include <Adafruit_MotorShield.h>
 #include <Wire.h>
-#include "utility/Adafruit_PWMServoDriver.h"
+//nclude "utility/Adafruit_PWMServoDriver.h"
 
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
@@ -34,6 +34,7 @@ Adafruit_StepperMotor *motor_right = AFMS.getStepper(200, 2);
 int n_steps_left = 0;
 int n_steps_right = 0;
 int count = 2;
+int motor_distance = 0;
 
 // message is the data sent over the USB, my diy communication protocol
 // message: [count, 'n', L steps, 'n', R steps, 'n', end]
@@ -84,11 +85,12 @@ void setup()
 
 void loop()
 {
-
-  if (Serial.available() > 0)
+  
+  if (Serial.available() > 0 && motor_distance == 0)
   {
 
     getSerial2(message);
+    //Serial.println("return from getSerial2()");
 
     Serial.print(message[0]);
     Serial.print(" ");
@@ -96,12 +98,10 @@ void loop()
     Serial.print(" ");
     Serial.println(message[2]);
     
-   
+       
     // Specify the next motor command
     stepper_left.move(message[1]);
     stepper_right.move(message[2]);
-    
-    
     
     // Reset the message
     for (int i=0; i<3; i++){
@@ -114,26 +114,14 @@ void loop()
   // Move the motors
   stepper_left.run();
   stepper_right.run();
+  
+  motor_distance = stepper_left.distanceToGo() + stepper_right.distanceToGo();
+  if (motor_distance == 0)
+  {
+    Serial.println("yes");
+  }
 
- 
- 
-//  // If data is in the USB buffer
-//  if (Serial.available() > 0)
-//  {
-//    n_steps_left  = getSerial();
-//    n_steps_right = getSerial();
-//    
-//    stepper_left.move(n_steps_left);
-//    stepper_right.move(n_steps_right);
-//    
-//
-//  }
-
-  
-//  stepper_left.run();
-//  stepper_right.run();
-  
-  
+   
 }    // end of loop()
 
 
