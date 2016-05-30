@@ -25,7 +25,7 @@ import time
 # Load the trajectory from the .csv file (gcode derived)
 file_path = 'DrawingInputFiles/'
 file_name = 'PelotonLogoXY.csv'
-#file_name = 'circleXY.csv'
+# file_name = 'circleXY.csv'
 xy = np.genfromtxt(file_path+file_name, delimiter=',')
 offset = np.array([203,-260])   # offset the pen to the center of drawing
 xy = xy + offset

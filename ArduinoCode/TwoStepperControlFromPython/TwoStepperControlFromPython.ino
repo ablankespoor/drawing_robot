@@ -116,10 +116,10 @@ void loop()
   stepper_right.run();
   
   motor_distance = stepper_left.distanceToGo() + stepper_right.distanceToGo();
-  if (motor_distance == 0)
-  {
-    Serial.println("yes");
-  }
+//  if (motor_distance == 0)
+//  {
+//    Serial.println("yes");
+//  }
 
    
 }    // end of loop()
