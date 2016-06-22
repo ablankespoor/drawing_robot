@@ -24,7 +24,8 @@ import time
 
 # Load the trajectory from the .csv file (gcode derived)
 file_path = 'DrawingInputFiles/'
-file_name = 'PelotonLogoXY.csv'
+#file_name = 'PelotonLogoXY.csv'
+file_name = 'Star-Wars-Yoda.csv'
 # file_name = 'circleXY.csv'
 xy = np.genfromtxt(file_path+file_name, delimiter=',')
 offset = np.array([203,-260])   # offset the pen to the center of drawing
@@ -75,6 +76,7 @@ def length2Steps(del_left,del_right,r,steps):
 def getArduinoResponse():
     # [point,left,right] = getArduinoResponse()
     r = str(arduino.readline())
+    #print(r)
     space1 = r.find(' ')
     space2 = r.find(' ',space1+1)
     dash1  = r.find('\r')
@@ -94,15 +96,16 @@ def getArduinoResponse():
 
 
 def sendMessage2Arduino(point,steps_L,steps_R):
+    # send the point number
     arduino.write(str(point+1).encode('ascii'))
-    arduino.write('n'.encode('ascii'))              # end of read
-
+    arduino.write('n'.encode('ascii'))              # end of write
+    # send the number of steps for left motor
     arduino.write(str(steps_L).encode('ascii'))
-    arduino.write('n'.encode('ascii'))              # end of read
-
+    arduino.write('n'.encode('ascii'))              # end of write
+    # send the number of steps for right motor
     arduino.write(str(steps_R).encode('ascii'))
-    arduino.write('n'.encode('ascii'))              # end of read
-
+    arduino.write('n'.encode('ascii'))              # end of write
+    # send the "end of message" command
     arduino.write('m'.encode('ascii'))              # end of message
 
     print('PI -> ARDUINO: '+str(point+1)+' '+str(steps_L)+' '+str(steps_R))

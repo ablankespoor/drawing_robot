@@ -1,13 +1,10 @@
 /*
 TwoStepperControlFromPython.ino
 
-Combine the StepperControlFromPython.ino, which only runs 1 stepper at a time, and 
-AF_MultiStepperTest.ino.
-
 Listens for commands from the Raspberry Pi over USB.  This code assumes a motor shield is
 connected and two stepper motors can be controlled by the Arduino.
 
-Currently for use with the Python code: make_square_path.py
+Currently for use with the Python code: draw_from_Gcode.py
 
 Requires the Adafruit motor shield library (https://....    )
 and AccelStepper with AFMotor support (https://github.com/adafruit/AccelStepper )
@@ -19,7 +16,7 @@ uses the Adafruit Motor Shield vs http://www.adafruit.com/products/1438
 #include <AccelStepper.h>
 #include <Adafruit_MotorShield.h>
 #include <Wire.h>
-//nclude "utility/Adafruit_PWMServoDriver.h"
+//include "utility/Adafruit_PWMServoDriver.h"
 
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
@@ -173,42 +170,5 @@ void getSerial2(int m[]){
   
   
 }
-
-
-
-//// Read the bytes from the USB, one at a time
-//// Accumulate the result in serial_data and return 
-//int getSerial() {
-//     int serial_data = 0;     // serial data, [count, motor, steps, cksm, end]
-//     int in_byte = 0;         // single byte, from serial buffer, bytes read one at a time
-//     int pos_neg_flag = 1;    // pos = 1 and neg = -1 (used as a multiplier)
-//     
-//     // while not the end of number:  'n'
-//     // 'n' --> ascii = 110 
-//     while (in_byte != 110) 
-//     { 
-//        in_byte = Serial.read();   // if Serial.read() is empty, it returns -1
-//        if (in_byte > 0 && in_byte != 110 && in_byte != 114) 
-//        {
-//           // data = previous_byte*10 + new_byte - '0'
-//           serial_data = serial_data * 10 + in_byte - '0';
-//           
-//           // deal with negative steps
-//           if (serial_data == -3) {
-//              pos_neg_flag = -1; 
-//              serial_data = 0;             
-//           }  
-//        } 
-//       else if (in_byte == 114){
-//           motor_left->release();
-//           motor_right->release();
-//           Serial.println("release() sent");
-//       }
-//     }
-//     
-//     in_byte = 0;
-//
-//     return serial_data * pos_neg_flag;  
-//}
 
 
