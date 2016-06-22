@@ -1,0 +1,5 @@
+# Ignore the files in this directory
+# My intention is to commit the directory, to maintain the structure,
+# but to ignore all the drawings themselves...
+
+[^.]*
