@@ -105,12 +105,24 @@ void loop()
       message[i] = 0;
     }
     
+    //Serial.println("");
+    
+
+    
 
   }
   
   // Move the motors
   stepper_left.run();
   stepper_right.run();
+  
+  // Check to see motor speed
+  if (stepper_left.speed()>0 || stepper_right.speed()>0)
+  {
+    Serial.print(stepper_left.speed());
+    Serial.print("   ");
+    Serial.println(stepper_right.speed());
+  }
   
   motor_distance = stepper_left.distanceToGo() + stepper_right.distanceToGo();
 //  if (motor_distance == 0)
