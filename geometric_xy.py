@@ -1,81 +1,127 @@
 #!/usr/bin/python3
 #
 # Make some geometric trajectories and output the x-y coordinates
-
-print('Running: geometric_xy.py')
-
-import matplotlib.pyplot as plt
-import math
-import numpy as np
-
-file_name = 'nested_squares'
-file_path = 'DrawingInputFiles/'
-output_file = file_name[:file_name.find('.')]+'.csv'
+#
+# TODO:
+#     the __main__ portion needs work
+#        - fix the file names for the nested circles
+#        - can I pass arguments (type of geo-shape?) to plot)  ... sort of manual right now 
 
 
+
+def nested_squares(side_length,delta,number_of):
+
+    path   = list()
+
+    for ii in range(0,number_of):
+        print('square number ' + str(ii+1) + ' side = ' +
+              str(side_length-ii*delta))
+
+        # Make the 4 corners for a given ii'th square
+        current_side = side_length - ii*delta
+
+        # Upper Left
+        x = -0.5 * current_side
+        y = 0.5 * current_side
+        path.append([x,y])
+
+        # Upper Right
+        x = 0.5 * current_side
+        y = 0.5 * current_side
+        path.append([x,y])
+
+        # Lower Right
+        x = 0.5 * current_side
+        y = -0.5 * current_side
+        path.append([x,y])
+
+        # Lower Left
+        x = -0.5 * current_side
+        y = -0.5 * current_side
+        path.append([x,y])
+
+
+    print()
+    path = np.array(path)
+
+    return path
+
+
+
+
+def nested_circles(start_radius,delta,number_of):
     
-# Iterate through the gcode and fine the trajectory (lines with "G1")
-path_x = list()
-path_y = list()
-path   = list()
+    path = list()
+    
+    # Iterate for a single circle
+    for ii in range(0,number_of):
 
-# Define parameters of initial square
-side   = 100
-delta  = 5
-number = 10
+        current_radius = start_radius - ii*delta
+        if current_radius <=0:
+            print('current_radius must be greater than 0, stopping...')
+            break
 
-path   = list()
+        # Calculate the curret circle resolution
+        tuning = 5         # lower number is more points in circles
+        delta_theta = int(tuning * (start_radius/current_radius))
+        print(str(current_radius)+' radius   '+str(delta_theta)+' del theta')
 
-for ii in range(0,number):
-    print('square number ' + str(ii+1) + ' sides = ' + str(side-ii*delta))
+        # Iterate for the points in a given circle
+        for theta in range(0,360,delta_theta):
+            x = current_radius * math.cos(theta*3.14/180)
+            y = current_radius * math.sin(theta*3.14/180)
 
-    # Make the 4 corners for a given ii'th square
-    current_side = side - ii*delta
+            path.append([x,y])
+            
+        
+    path = np.array(path)
+    
+    return path
+  
 
-    # Upper Left
-    x = -0.5 * current_side
-    y = 0.5 * current_side
-    path.append([x,y])
-
-    # Upper Right
-    x = 0.5 * current_side
-    y = 0.5 * current_side
-    path.append([x,y])
-
-    # Lower Right
-    x = 0.5 * current_side
-    y = -0.5 * current_side
-    path.append([x,y])
-
-    # Lower Left
-    x = -0.5 * current_side
-    y = -0.5 * current_side
-    path.append([x,y])
-
-
-print()
-path = np.array(path)
-print(path)
+        
         
 
+
+
+def plotter(path):
+    # Plot the xy points
+    plt.plot(path[:,0],path[:,1],'.-',path[0][0],path[0][1],'o')
+    plt.plot([0,0],[-10, 10],'k',[-10,10],[0,0],'k',lw=2)
+    plt.title('X-Y Coordinates from Gcode')
+    plt.xlabel('x [mm]')
+    plt.ylabel('y [mm]')
+    plt.grid(True)
+    plt.show()
+
+
+
+
+
+if __name__ == '__main__':
+
+    # shape = 'nested_squares'
+    shape = 'nested_circles'
+
+    import matplotlib.pyplot as plt
+    import math
+    import numpy as np
+
+    print('Running: geometric_xy.py for --->  '+shape)
+
+    if shape == 'nested_squares':
+        path = nested_squares(100,5,20)
+    if shape == 'nested_circles':
+        path = nested_circles(40,1,30)
+
+    # Save the path data and export to Raspberry Pi for plotting
+    file_name   = shape
+    file_path   = 'DrawingInputFiles/'
+    output_file = file_name+'.csv'
+    np.savetxt(file_path+output_file,path,delimiter=",")
     
+
+    # Plot the path
+    plotter(path)
+
     
-
-
-
-
-
-
-#offset = path[0,:]
-#path = path - offset
-
-# Save the path data and export to Raspberry Pi for plotting
-np.savetxt(file_path+output_file,path,delimiter=",")
-
-# Plot the xy points
-plt.plot(path[:,0],path[:,1],'.-',path[0][0],path[0][1],'o')
-plt.title('X-Y Coordinates from Gcode')
-plt.xlabel('x [mm]')
-plt.ylabel('y [mm]')
-plt.grid(True)
-plt.show()
