@@ -40,10 +40,10 @@ for line in gcode:
         index_x2 = line.find(' ',index_x1)
         index_y1 = line.find('Y')
         index_y2 = line.find(' ',index_y1)
-##        # Exlude the "Peloton" text (couldn't crop in Inkscape...)
+
         x = float(line[index_x1+1:index_x2])
         y = float(line[index_y1+1:index_y2])
-##        if y > -30:
+
         path_x.append(x)
         path_y.append(y)
         path.append([x,y])
