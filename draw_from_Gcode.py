@@ -24,10 +24,15 @@ import time
 
 # Load the trajectory from the .csv file (gcode derived)
 file_path = 'DrawingInputFiles/'
-#file_name = 'PelotonLogoXY.csv'
+
+# file_name = 'PelotonLogoXY.csv'
 file_name = 'Star-Wars-Yoda.csv'
 # file_name = 'circleXY.csv'
+# file_name = 'nested_square.csv'
+
 xy = np.genfromtxt(file_path+file_name, delimiter=',')
+xy_relative = xy
+
 offset = np.array([203,-260])   # offset the pen to the center of drawing
 xy = xy + offset
 
@@ -46,8 +51,17 @@ for device in a_locations:
     except:
         print("Failed to connect on "+device)
             
-time.sleep(1)   # let the connection settle
+time.sleep(2)   # let the connection settle
 
+
+def changeInXY(xy1,xy2):
+    # Given two points, find the change in relative position
+    # used in the output for the user
+    #[del_x,del_y] = changeInXY(start_point,end_point)
+    del_x = xy2[0] - xy1[0]
+    del_y = xy2[1] - xy1[1]
+
+    return del_x,del_y
 
 
 def changeInLength(xy1,xy2,dm):
@@ -84,14 +98,6 @@ def getArduinoResponse():
     l = r[space1+1:space2]
     r = r[space2+1:-5]
     print('ARDUINO -> PI: '+pnt+' '+l+' '+r)
-    # Wait here for motors to finish moving
-##    motor_done = "no"
-##    while (motor_done == "no"):
-##        motor_done = str(arduino.readline())[2:5]
-##        print(motor_done)
-    #r2 = str(arduino.readline())
-    #print(r2)
-    
     return pnt,l,r
 
 
@@ -112,10 +118,7 @@ def sendMessage2Arduino(point,steps_L,steps_R):
 
     # Wait for a response from arduino, with correct data...
     [pnt,l,r] = getArduinoResponse()
-    #print('ARDUINO -> PI: '+pnt+' '+l+' '+r)
 
-##    if int(pnt)==point+1:
-##        print('matching response')
 
 
 
@@ -123,7 +126,10 @@ def sendMessage2Arduino(point,steps_L,steps_R):
 # Iterate through the xy array, calculate the change in lengths, and send
 # the commands to the Arduino
 for point in range(1,len(xy)):
-    print('moving to point ' + str(point+1) + '/' + str(xy.shape[0]) + '   ' + str(xy[point]))
+
+    # Find the relative change in xy to the next point
+    [del_x,del_y] = changeInXY(xy[point-1],xy[point])
+    print('moving to point ' + str(point+1) + '/' + str(xy.shape[0]) + '    ['+str(del_x)+', '+str(del_y)+']')
     
     # Find the change in the string length for left and right
     [del_left,del_right] = changeInLength(xy[point-1],xy[point],dm)
@@ -133,6 +139,9 @@ for point in range(1,len(xy)):
 
     # Send the steps to the arduino
     sendMessage2Arduino(point,steps_left,steps_right)
+    ##  remove the line below when using arduino
+    #print('PI -> ARDUINO: '+str(point+1)+' '+str(steps_left)+' '+str(steps_right))
+
 
     # Pause for user input
     #input("Press Enter to continue")    
