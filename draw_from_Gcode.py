@@ -46,6 +46,7 @@ a_locations = ['/dev/ttyACM0','/dev/ttyACM1']
 for device in a_locations:
     try:
         arduino = serial.Serial(device, 9600)
+
         print("Connected to Arduino on "+device)
         break
     except:
@@ -81,6 +82,7 @@ def changeInLength(xy1,xy2,dm):
 
 
 def length2Steps(del_left,del_right,r,steps):
+
     # [left,right] = length2Steps(distance_left,distance_right,radius,motor_steps)
     mm2step = steps / (2 * 3.14 * r)
     steps_left  = del_left * mm2step

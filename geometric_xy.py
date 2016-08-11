@@ -100,8 +100,8 @@ def plotter(path):
 
 if __name__ == '__main__':
 
-    # shape = 'nested_squares'
-    shape = 'nested_circles'
+    shape = 'nested_squares'
+    #shape = 'nested_circles'
 
     import matplotlib.pyplot as plt
     import math
@@ -110,7 +110,7 @@ if __name__ == '__main__':
     print('Running: geometric_xy.py for --->  '+shape)
 
     if shape == 'nested_squares':
-        path = nested_squares(100,5,20)
+        path = nested_squares(50,5,3)
     if shape == 'nested_circles':
         path = nested_circles(40,1,30)
 

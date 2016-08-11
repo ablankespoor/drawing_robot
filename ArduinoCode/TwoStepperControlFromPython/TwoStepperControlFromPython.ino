@@ -31,7 +31,7 @@ Adafruit_StepperMotor *motor_right = AFMS.getStepper(200, 2);
 int n_steps_left = 0;
 int n_steps_right = 0;
 int count = 2;
-int motor_distance = 0;
+int distance_to_go = 0;
 
 // message is the data sent over the USB, my diy communication protocol
 // message: [count, 'n', L steps, 'n', R steps, 'n', end]
@@ -83,12 +83,11 @@ void setup()
 void loop()
 {
   
-  if (Serial.available() > 0 && motor_distance == 0)
+  if (Serial.available() > 0 && distance_to_go == 0)
   {
 
     getSerial2(message);
-    //Serial.println("return from getSerial2()");
-
+    // Output to serial "point, left motor steps, right
     Serial.print(message[0]);
     Serial.print(" ");
     Serial.print(message[1]);
@@ -104,32 +103,31 @@ void loop()
     for (int i=0; i<3; i++){
       message[i] = 0;
     }
-    
-    //Serial.println("");
-    
 
-    
-
-  }
+  } // end of Serial read
+  
   
   // Move the motors
   stepper_left.run();
   stepper_right.run();
   
-  // Check to see motor speed
-  if (stepper_left.speed()>0 || stepper_right.speed()>0)
-  {
-    Serial.print(stepper_left.speed());
-    Serial.print("   ");
-    Serial.println(stepper_right.speed());
-  }
-  
-  motor_distance = stepper_left.distanceToGo() + stepper_right.distanceToGo();
-//  if (motor_distance == 0)
-//  {
-//    Serial.println("yes");
-//  }
+  distance_to_go = stepper_left.distanceToGo() + stepper_right.distanceToGo();
 
+  
+  delay(20);
+  
+  
+//  // Check to see motor position
+//  if (stepper_left.speed()>0 || stepper_right.speed()>0)
+//  { 
+//      //int temp = 5;
+//      //delay(100);
+//    Serial.print("x ");
+//    Serial.print(stepper_left.currentPosition());
+//    Serial.print("   ");
+//    Serial.println(stepper_right.currentPosition());
+//  }
+    
    
 }    // end of loop()
 
@@ -158,11 +156,6 @@ void getSerial2(int m[]){
         m[index] = 0;
       }
       
-//      Serial.print(m[0]);
-//      Serial.print("  ");
-//      Serial.print(m[1]);
-//      Serial.print("  ");
-//      Serial.println(m[2]);
     }
     // When the current read is done, account for negatives
     if (in_byte == 110){

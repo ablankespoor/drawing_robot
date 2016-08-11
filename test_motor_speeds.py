@@ -22,8 +22,19 @@ import numpy as np
 import serial
 import time
 
+# If desired, load the trajectory data from .csv file
+file_path = 'DrawingInputFiles/'
+
+file_name = 'Star-Wars-Yoda.csv'
+#file_name = 'nested_squares.csv'
+#xy = np.genfromtxt(file_path+file_name, delimiter=',')
+
 # Define some xy points 
-xy = np.array([[0,0],[50,10],[0,0]])
+xy = np.array([[0,0],[10,50],[0,0]])
+#xy = np.array([[0,0],[0,50],[0,0]])
+##xy = np.array([[0,0],[0,50],[0,0],[0,50],[0,0],[0,50],[0,0]])
+##xy = np.array([[0,0],[10,50],[0,0]])
+xy_relative = xy
 offset = np.array([203,-260])   # offset the pen to the center of drawing
 xy = xy + offset
 
@@ -42,8 +53,17 @@ for device in a_locations:
     except:
         print("Failed to connect on "+device)
             
-time.sleep(1)   # let the connection settle
+time.sleep(2)   # let the connection settle
+arduino.flushInput()
 
+
+def changeInXY(xy1,xy2):
+    # Given two points, find the change in relative position
+    # used in the output for the user
+    # [del_x,del_y] = changeInXY(start_position,end_position)
+    del_x = xy2[0] - xy1[0]
+    del_y = xy2[1] - xy1[1]
+    return del_x,del_y
 
 
 def changeInLength(xy1,xy2,dm):
@@ -71,23 +91,31 @@ def length2Steps(del_left,del_right,r,steps):
 
 def getArduinoResponse():
     # [point,left,right] = getArduinoResponse()
-    r = str(arduino.readline())
-    #print(r)
-    space1 = r.find(' ')
-    space2 = r.find(' ',space1+1)
-    dash1  = r.find('\r')
-    pnt = r[2:space1]
-    l = r[space1+1:space2]
-    r = r[space2+1:-5]
+    res = str(arduino.readline())
+
+##    ####################
+##    # Read and display the intermediate data from Arduino (e.g. position, speed)
+##    time.sleep(2)
+##    if arduino.inWaiting() > 0:
+##        res = str(arduino.readline())   
+##        while res.find('x') == 2:
+##            print(res[4:-5])
+##            if arduino.inWaiting() > 0:
+##                res = str(arduino.readline())
+##            elif arduino.inWaiting() == 0:
+##                break
+##
+##    #####################
+                
+    space1 = res.find(' ')
+    space2 = res.find(' ',space1+1)
+    dash1  = res.find('\r')
+    pnt = res[2:space1]
+    l = res[space1+1:space2]
+    r = res[space2+1:-5]
     print('ARDUINO -> PI: '+pnt+' '+l+' '+r)
-    # Wait here for motors to finish moving
-##    motor_done = "no"
-##    while (motor_done == "no"):
-##        motor_done = str(arduino.readline())[2:5]
-##        print(motor_done)
-    #r2 = str(arduino.readline())
-    #print(r2)
-    
+
+
     return pnt,l,r
 
 
@@ -107,19 +135,18 @@ def sendMessage2Arduino(point,steps_L,steps_R):
     print('PI -> ARDUINO: '+str(point+1)+' '+str(steps_L)+' '+str(steps_R))
 
     # Wait for a response from arduino, with correct data...
-    #[pnt,l,r] = getArduinoResponse()
-    #print('ARDUINO -> PI: '+pnt+' '+l+' '+r)
-
-##    if int(pnt)==point+1:
-##        print('matching response')
-
+    [pnt,l,r] = getArduinoResponse()
 
 
 
 # Iterate through the xy array, calculate the change in lengths, and send
 # the commands to the Arduino
 for point in range(1,len(xy)):
-    print('moving to point ' + str(point+1) + '/' + str(xy.shape[0]) + '   ' + str(xy[point]))
+    # print('moving to point ' + str(point+1) + '/' + str(xy.shape[0]) + '   ' + str(xy[point]))
+
+    # Find the relative change in xy to the next point
+    [del_x,del_y] = changeInXY(xy[point-1],xy[point])
+    print('moving to point ' + str(point+1) + '/' + str(xy.shape[0]) + '  ['+str(del_x)+', '+str(del_y)+']')
     
     # Find the change in the string length for left and right
     [del_left,del_right] = changeInLength(xy[point-1],xy[point],dm)
@@ -143,7 +170,7 @@ for point in range(1,len(xy)):
 #print('PI -> ARDUINO: release')
 arduino.write('r'.encode('ascii'))
 arduino.write('m'.encode('ascii'))
-#print(arduino.readline()[0:-2])
+print(arduino.readline()[0:-2])
 
 arduino.close()
 
