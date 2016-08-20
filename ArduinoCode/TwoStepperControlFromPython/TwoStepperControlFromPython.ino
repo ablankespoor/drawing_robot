@@ -87,7 +87,7 @@ void loop()
   {
 
     getSerial2(message);
-    // Output to serial "point, left motor steps, right
+    // Output to serial "point, left motor steps, right"
     Serial.print(message[0]);
     Serial.print(" ");
     Serial.print(message[1]);
@@ -114,10 +114,11 @@ void loop()
   distance_to_go = stepper_left.distanceToGo() + stepper_right.distanceToGo();
 
   
-  delay(20);
   
   
-//  // Check to see motor position
+  
+//  // Display the motor position for debugging
+//  // For some reason, this cleans up trajectory a bit
 //  if (stepper_left.speed()>0 || stepper_right.speed()>0)
 //  { 
 //      //int temp = 5;
@@ -127,6 +128,9 @@ void loop()
 //    Serial.print("   ");
 //    Serial.println(stepper_right.currentPosition());
 //  }
+  
+  // This delay accomplishes the same effect as the above output
+  delay(20);
     
    
 }    // end of loop()
