@@ -26,9 +26,12 @@ import time
 file_path = 'DrawingInputFiles/'
 
 # file_name = 'PelotonLogoXY.csv'
-file_name = 'Star-Wars-Yoda.csv'
+# file_name = 'Star-Wars-Yoda.csv'
 # file_name = 'circleXY.csv'
 # file_name = 'nested_square.csv'
+file_name = 'cat_outline_11_9_16_tsp.csv'
+# file_name = 'tiger_3_tsp_11_2_16.csv'
+# file_name = 'walking_lion2.csv'
 
 xy = np.genfromtxt(file_path+file_name, delimiter=',')
 xy_relative = xy
