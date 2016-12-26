@@ -12,10 +12,13 @@ import numpy as np
 #file_name = 'PelotonLinkLogo.gcode'
 #file_name = 'cat_outline_from_unicorn.gcode'
 #file_name = 'circle_from_unicorn.gcode'
-file_name = 'Star-Wars-Yoda.gcode'
+#file_name = 'Star-Wars-Yoda.gcode'
+#file_name = 'yoda_from_plotterize.gcode'
 #file_name = 'sitting_cat_outline.gcode'
+file_name = 'tiger_10_4_16_with_unicorn.gcode'
 
-file_path = 'DrawingInputFiles/'
+#file_path = 'DrawingInputFiles/'
+file_path = '/home/pi/Documents/image_gcode_developmen/gcode_files/'
 output_file = file_name[:file_name.find('.')]+'.csv'
 
 
