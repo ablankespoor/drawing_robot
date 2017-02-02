@@ -25,6 +25,10 @@ import time
 # Load the trajectory from the .csv file (gcode derived)
 file_path = 'DrawingInputFiles/'
 
+#file_name = 'PelotonLogoXY.csv'
+#file_name = 'Star-Wars-Yoda.csv'
+#file_name = 'circleXY.csv'
+
 # file_name = 'PelotonLogoXY.csv'
 # file_name = 'Star-Wars-Yoda.csv'
 # file_name = 'circleXY.csv'
@@ -32,6 +36,7 @@ file_path = 'DrawingInputFiles/'
 file_name = 'cat_outline_11_9_16_tsp.csv'
 # file_name = 'tiger_3_tsp_11_2_16.csv'
 # file_name = 'walking_lion2.csv'
+
 
 xy = np.genfromtxt(file_path+file_name, delimiter=',')
 xy_relative = xy
@@ -57,6 +62,9 @@ for device in a_locations:
             
 time.sleep(2)   # let the connection settle
 
+#arduino.flushInput()  # used in serial-communication changes
+
+
 
 def changeInXY(xy1,xy2):
     # Given two points, find the change in relative position
@@ -66,6 +74,7 @@ def changeInXY(xy1,xy2):
     del_y = xy2[1] - xy1[1]
 
     return del_x,del_y
+
 
 
 def changeInLength(xy1,xy2,dm):
