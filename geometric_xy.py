@@ -79,7 +79,20 @@ def nested_circles(start_radius,delta,number_of):
     return path
   
 
-        
+def five_move_rectangle(x_length,y_length):
+    path = list()
+
+    path.append([0,0])
+    path.append([x_length,0])
+    path.append([0,-y_length])
+    path.append([0,0])
+    path.append([x_length,-y_length])
+    path.append([x_length,0])
+    path.append([0,0])
+
+    path = np.array(path)
+
+    return path
         
 
 
@@ -100,8 +113,9 @@ def plotter(path):
 
 if __name__ == '__main__':
 
-    shape = 'nested_squares'
+    #shape = 'nested_squares'
     #shape = 'nested_circles'
+    shape = 'rectangle'
 
     import matplotlib.pyplot as plt
     import math
@@ -113,6 +127,8 @@ if __name__ == '__main__':
         path = nested_squares(50,5,3)
     if shape == 'nested_circles':
         path = nested_circles(40,1,30)
+    if shape == 'rectangle':
+        path = five_move_rectangle(20,50)
 
     # Save the path data and export to Raspberry Pi for plotting
     file_name   = shape
