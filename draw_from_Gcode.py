@@ -30,10 +30,10 @@ file_path = 'DrawingInputFiles/'
 #file_name = 'circleXY.csv'
 
 # file_name = 'PelotonLogoXY.csv'
-# file_name = 'Star-Wars-Yoda.csv'
+file_name = 'Star-Wars-Yoda.csv'
 # file_name = 'circleXY.csv'
 # file_name = 'nested_square.csv'
-file_name = 'cat_outline_11_9_16_tsp.csv'
+# file_name = 'cat_outline_11_9_16_tsp.csv'
 # file_name = 'tiger_3_tsp_11_2_16.csv'
 # file_name = 'walking_lion2.csv'
 
@@ -49,18 +49,18 @@ r  = 11.5 / 2                   # [mm] radius of 3d printed pully
 dm = 406.4                      # [mm] distance between motor shafts
 motor_steps = 200               # number of steps per revolution (1.8 degrees)
 
-# Setup the arduino interface
-a_locations = ['/dev/ttyACM0','/dev/ttyACM1']
-for device in a_locations:
-    try:
-        arduino = serial.Serial(device, 9600)
-
-        print("Connected to Arduino on "+device)
-        break
-    except:
-        print("Failed to connect on "+device)
-            
-time.sleep(2)   # let the connection settle
+### Setup the arduino interface
+##a_locations = ['/dev/ttyACM0','/dev/ttyACM1']
+##for device in a_locations:
+##    try:
+##        arduino = serial.Serial(device, 9600)
+##
+##        print("Connected to Arduino on "+device)
+##        break
+##    except:
+##        print("Failed to connect on "+device)
+##            
+##time.sleep(2)   # let the connection settle
 
 #arduino.flushInput()  # used in serial-communication changes
 
@@ -139,7 +139,7 @@ def sendMessage2Arduino(point,steps_L,steps_R):
 
 # Iterate through the xy array, calculate the change in lengths, and send
 # the commands to the Arduino
-for point in range(1,len(xy)):
+for point in range(1,10):   #len(xy)):
 
     # Find the relative change in xy to the next point
     [del_x,del_y] = changeInXY(xy[point-1],xy[point])
@@ -150,9 +150,10 @@ for point in range(1,len(xy)):
 
     # Find the number of steps for each motor
     [steps_left,steps_right] = length2Steps(del_left,del_right,r,motor_steps)
+    print('PI -> ARDUINO: '+str(point+1)+' '+str(steps_left)+' '+str(steps_right))
 
     # Send the steps to the arduino
-    sendMessage2Arduino(point,steps_left,steps_right)
+    #sendMessage2Arduino(point,steps_left,steps_right)
     ##  remove the line below when using arduino
     #print('PI -> ARDUINO: '+str(point+1)+' '+str(steps_left)+' '+str(steps_right))
 
@@ -161,16 +162,18 @@ for point in range(1,len(xy)):
     #input("Press Enter to continue")    
 
     
-    print()
+    #print()
 
+
+print(xy[0:5])
 # Test for sending messages
 #sendMessage2Arduino(3,-10,10)
 
 # Tell the Arduino to release the motors
 #print('PI -> ARDUINO: release')
-arduino.write('r'.encode('ascii'))
-arduino.write('m'.encode('ascii'))
-print(arduino.readline())
+#arduino.write('r'.encode('ascii'))
+#arduino.write('m'.encode('ascii'))
+#print(arduino.readline())
 
 
-arduino.close()
+#arduino.close()
