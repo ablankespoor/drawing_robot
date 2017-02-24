@@ -36,7 +36,7 @@ file_path = 'DrawingInputFiles/'
 file_name = 'cat_outline_11_9_16_tsp.csv'
 # file_name = 'tiger_3_tsp_11_2_16.csv'
 # file_name = 'walking_lion2.csv'
-
+# file_name = 'rectangle.csv'
 
 xy = np.genfromtxt(file_path+file_name, delimiter=',')
 xy_relative = xy
@@ -143,10 +143,11 @@ for point in range(1,len(xy)):
 
     # Find the relative change in xy to the next point
     [del_x,del_y] = changeInXY(xy[point-1],xy[point])
-    print('moving to point ' + str(point+1) + '/' + str(xy.shape[0]) + '    ['+str(del_x)+', '+str(del_y)+']')
+    print('moving to point ' + str(point+1) + '/' + str(xy.shape[0]) + '    delta x,y: ['+str(del_x)+', '+str(del_y)+']')
     
     # Find the change in the string length for left and right
     [del_left,del_right] = changeInLength(xy[point-1],xy[point],dm)
+    print('change in string lengths: ['+str(del_left)+', '+str(del_right)+']')
 
     # Find the number of steps for each motor
     [steps_left,steps_right] = length2Steps(del_left,del_right,r,motor_steps)
