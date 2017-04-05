@@ -87,16 +87,12 @@ def find_motor_steps(path):
     
     for point in range(1,len(path)-1):
 
-        #print(path[point])
-
         # Find the relative change in xy to the next point
         [del_x,del_y] = find_change_in_xy(path[point-1],path[point])
-        #print(del_x,del_y)
         steps[point,3:5] = [del_x, del_y ]
 
         # Find the change in the string length for left and right
         [del_left,del_right] = find_change_in_length(path[point-1],path[point])
-        #print(point, del_left,del_right)
 
         # Find the number of steps for each motor
         [steps_left,steps_right] = convert_length_to_steps(del_left,del_right)
