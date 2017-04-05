@@ -1,0 +1,5 @@
+2017-03-27  13:22:30.882,  Generating log file
+2017-03-27  13:22:30.894,  loading data from: Star-Wars-Yoda.csv
+2017-03-27  13:22:31.021,  Connected to Arduino on /dev/ttyACM1
+2017-03-27  13:22:33.042,  2 / 218,   14.0 12.0
+2017-03-27  13:22:33.109,  3 / 218,   13.0 9.0

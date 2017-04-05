@@ -82,20 +82,27 @@ def find_change_in_xy(xy1,xy2):
 
 
 def find_motor_steps(path):
-    steps = np.zeros([len(path),6])
+    steps = np.zeros([len(path),7])
+    steps[:,-2:] = path
     
-    for point in range(1,len(path)):
+    for point in range(1,len(path)-1):
+
+        #print(path[point])
+
         # Find the relative change in xy to the next point
         [del_x,del_y] = find_change_in_xy(path[point-1],path[point])
-        #print('moving to point ' + str(point+1) + '/' + str(path.shape[0]) + '    ['+str(del_x)+', '+str(del_y)+']')
-        steps[point,2:] = [del_x, del_y, path[point,0], path[point,1] ]
+        #print(del_x,del_y)
+        steps[point,3:5] = [del_x, del_y ]
 
         # Find the change in the string length for left and right
         [del_left,del_right] = find_change_in_length(path[point-1],path[point])
+        #print(point, del_left,del_right)
 
         # Find the number of steps for each motor
         [steps_left,steps_right] = convert_length_to_steps(del_left,del_right)
-        steps[point,0:2] = [steps_left, steps_right]
+        steps[point,1:3] = [steps_left, steps_right]
+
+        steps[point,0] = point
 
     return steps
 
@@ -119,7 +126,8 @@ def plotter(path):
 
 if __name__ == '__main__':
     print('Running: generate_motor_steps.py')
-
+    print()
+    print('NEw DATA')
     import matplotlib.pyplot as plt
     import math
     import numpy as np
@@ -133,29 +141,34 @@ if __name__ == '__main__':
 
     
     # Call my script to open a file from a list
-    file_name = load_my_file.file_namer()
-    file_path = load_my_file.file_path_os('win')
+    file_name = load_my_file.file_namer('.gcode')
+    file_path = load_my_file.file_path_os('pi')
     output_file = file_name[:file_name.find('.')]+'.csv'
-
-    
 
 
     # Open Gcode file and extract the X,Y trajectory points
     path = extract_xy_from_Gcode(file_path+file_name)
+
+    offset = np.array([203,-260])
+    path   = path + offset
+
+    # Run through the array and calculate the number of motor steps
+    # [point, steps_left, steps_right, relative_x, relative_y, x, y]
+    step_data = find_motor_steps(path)
+
+
+    print()
+    print('step_left, step_right,   rel_x, rel_y,   x, y   ... frist 10 steps...')
+    print(step_data[0:10])
+
+    # Save the path data and export to Raspberry Pi for plotting
+    np.savetxt(file_path+output_file,step_data,fmt='%.2f',delimiter=",   ")
+
     # Plot the trajectory
     #plotter(path)
 
-    # Run through the array and calculate the number of motor steps
-    # [steps_left, steps_right, relative_x, relative_y, x, y]
-    step_data = find_motor_steps(path)
-    print()
-    print('step_left, step_right,   rel_x, rel_y,   x, y')
-    print(step_data[0:10])
 
 
-
-    # Save the path data and export to Raspberry Pi for plotting
-    np.savetxt(file_path+output_file,step_data,delimiter=",")
 
 
 
