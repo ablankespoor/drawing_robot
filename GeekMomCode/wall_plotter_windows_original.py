@@ -308,8 +308,7 @@ def showimg(img):
     # Pygame doesn't handle 8-bit images well, so convert to RBG if it is Grayscale
     if (img.mode == 'L'):
         img = img.convert('RGB')
-    # imstring = img.tostring()    # .tostring() is deprecated?
-    imstring = img.tobytes()
+    imstring = img.tostring()
     sur = pygame.image.fromstring(imstring, img.size, img.mode)
     # Convert to grayscale
     sur = grayscale_surface(sur)
@@ -628,41 +627,41 @@ def main():
     elif option == 4:
         instructions = draw_test_pattern()
         
-##    # Open serial connection to Arduino -> TBD set correct port
-##    port_name = ""
-##    if (CURRENT_OS == OS_WINDOWS):
-##        port_name = "COM34"
-##    elif(CURRENT_OS == OS_RASPBIAN):
-##        port_name = "/dev/ttyUSB0"
-##    arduino = serial.Serial(port=port_name, baudrate=57600)
-##    print(arduino.name)
-##
-##    # Wait for connection to establish
-##    connected = False
-##    while not connected:
-##        serin = arduino.read()
-##        connected = True     
-##        
-##    # Send directions to the Arduino and listen for feedback
-##    while True:
-##        line = arduino.readline()
-##        if line:
-##            cmd = processdata(line)
-##            if (cmd == CMD_CONSOLE):
-##                print(line)
-##            elif (cmd == CMD_OK):
-##                if len(instructions) == 0:
-##                    print("finished")
-##                else:
-##                    # Obtain and remove the first instruction from the list
-##                    inst = instructions.pop(0)
-##                    buf = "%c %d %d;" % (inst[0], inst[1], inst[2])
-##                    #print("buf = " + buf)
-##                    arduino.write(buf.encode('ascii'))       
-##            else:
-##                print("Command received but not understood:")
-##                print(line)
-##            
+    # Open serial connection to Arduino -> TBD set correct port
+    port_name = ""
+    if (CURRENT_OS == OS_WINDOWS):
+        port_name = "COM34"
+    elif(CURRENT_OS == OS_RASPBIAN):
+        port_name = "/dev/ttyUSB0"
+    arduino = serial.Serial(port=port_name, baudrate=57600)
+    print(arduino.name)
+
+    # Wait for connection to establish
+    connected = False
+    while not connected:
+        serin = arduino.read()
+        connected = True     
+        
+    # Send directions to the Arduino and listen for feedback
+    while True:
+        line = arduino.readline()
+        if line:
+            cmd = processdata(line)
+            if (cmd == CMD_CONSOLE):
+                print(line)
+            elif (cmd == CMD_OK):
+                if len(instructions) == 0:
+                    print("finished")
+                else:
+                    # Obtain and remove the first instruction from the list
+                    inst = instructions.pop(0)
+                    buf = "%c %d %d;" % (inst[0], inst[1], inst[2])
+                    #print("buf = " + buf)
+                    arduino.write(buf.encode('ascii'))       
+            else:
+                print("Command received but not understood:")
+                print(line)
+            
 
 main()
     
