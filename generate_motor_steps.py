@@ -123,7 +123,7 @@ def plotter(path):
 if __name__ == '__main__':
     print('Running: generate_motor_steps.py')
     print()
-    print('NEw DATA')
+    
     import matplotlib.pyplot as plt
     import math
     import numpy as np
@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
     
     # Call my script to open a file from a list
-    file_name = load_my_file.file_namer('.gcode')
+    file_name = load_my_file.file_namer(2,'.gcode')
     file_path = load_my_file.file_path_os('pi')
     output_file = file_name[:file_name.find('.')]+'.csv'
 

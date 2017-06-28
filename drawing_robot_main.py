@@ -9,11 +9,11 @@
 # This code currently communicates to the Arduino that is flashed
 # with: TwoStepperControlFromPython.ino
 
-def load_data():
+def load_data(file_number):
     # Returns:
     #    [point, steps_left, steps_right, relative_x, relative_y, x, y]
     import load_my_file
-    file_name = load_my_file.file_namer('.csv')
+    file_name = load_my_file.file_namer(file_number,'.csv')
     file_path = load_my_file.file_path_os('pi')
     logging.debug('loading data from: %s', file_name)
     return np.genfromtxt(file_path+file_name, delimiter=',')
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     #    - This could be a user input in the future, but that code
     #    - is a nice list of usable drawings.
     # path: [point, steps_left, steps_right, relative_x, relative_y, x, y]
-    path = load_data()
+    path = load_data(2)
 
     
     # Setup the arduino interface
