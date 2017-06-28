@@ -607,9 +607,12 @@ def main():
     elif (CURRENT_OS == OS_RASPBIAN):
         dirname = "/home/pi/WallPlotterImages"
     filename = filedialog.askopenfilename(title="Chose a Data File",
-                                          initialdir=dirname,
-                                          filetypes=[('all files', '.*'), ('jpg files', '.jpg')])
-    print(filename) 
+                                         initialdir=dirname,
+                                         filetypes=[('all files', '.*'), ('jpg files', '.jpg')])
+    
+
+    
+    print(filename)
 
     print("Enter graphics type:")
     print("(1) Image file shading")
@@ -617,6 +620,7 @@ def main():
     print("(3) GCode")
     print("(4) Test Pattern")
     option = int(input("Select number of desired option "))
+
 
     instructions = []
     if option == 1:
@@ -627,6 +631,8 @@ def main():
         instructions = vectorimage(filename)
     elif option == 4:
         instructions = draw_test_pattern()
+
+    print(instructions[:10])
         
 ##    # Open serial connection to Arduino -> TBD set correct port
 ##    port_name = ""
