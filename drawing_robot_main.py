@@ -72,6 +72,7 @@ def set_up_arduino():
         logging.debug('no adruino connected')
     else:
         arduino.flushInput()
+    print()
     return arduino
         
 
@@ -126,18 +127,20 @@ if __name__ == '__main__':
 
     
     # Iterate through the steps array, and send the commands to the Arduino
-    for point in range(1,5):  #len(path)):
+    for point in range(1,len(path)):
+
+        # Print the current movement 
+        print('moving to point ' + str(point+1) + '/' + str(path.shape[0]))
+        
 
         # Send the steps to the arduino
         if arduino != "":
             send_message_2_arduino(point,path[point,1],path[point,2])
-
-        # Print the current movement 
-        print('moving to point ' + str(point+1) + '/' + str(path.shape[0]))
         print()
 
+
         # Log the current movement
-        logging.debug('%s / %s,   %s %s', str(point+1), str(path.shape[0]),
+        logging.debug('point: %s / %s,   steps: %s %s', str(point+1), str(path.shape[0]),
                       str(path[point,1]), str(path[point,2]) )
 
 
