@@ -15,6 +15,7 @@ def load_data(file_number):
     import load_my_file
     file_name = load_my_file.file_namer(file_number,'.csv')
     file_path = load_my_file.file_path_os('pi')
+    print('Loading data from: ', file_name)
     logging.debug('loading data from: %s', file_name)
     return np.genfromtxt(file_path+file_name, delimiter=',')
 
