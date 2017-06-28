@@ -30,10 +30,10 @@ file_path = 'DrawingInputFiles/'
 #file_name = 'circleXY.csv'
 
 # file_name = 'PelotonLogoXY.csv'
-file_name = 'Star-Wars-Yoda.csv'
+#file_name = 'Star-Wars-Yoda.csv'
 # file_name = 'circleXY.csv'
 # file_name = 'nested_square.csv'
-# file_name = 'cat_outline_11_9_16_tsp.csv'
+file_name = 'cat_outline_11_9_16_tsp_original.csv'
 # file_name = 'tiger_3_tsp_11_2_16.csv'
 # file_name = 'walking_lion2.csv'
 # file_name = 'rectangle.csv'
@@ -61,8 +61,8 @@ motor_steps = 200               # number of steps per revolution (1.8 degrees)
 ##        print("Failed to connect on "+device)
 ##            
 ##time.sleep(2)   # let the connection settle
-
-#arduino.flushInput()  # used in serial-communication changes
+##
+##arduino.flushInput()  # used in serial-communication changes
 
 
 
@@ -131,33 +131,35 @@ def sendMessage2Arduino(point,steps_L,steps_R):
     print('PI -> ARDUINO: '+str(point+1)+' '+str(steps_L)+' '+str(steps_R))
 
     # Wait for a response from arduino, with correct data...
-    [pnt,l,r] = getArduinoResponse()
+    #[pnt,l,r] = getArduinoResponse()
 
 
 
-
+print('ORIGINAL DATA')
 
 # Iterate through the xy array, calculate the change in lengths, and send
 # the commands to the Arduino
 for point in range(1,10):   #len(xy)):
 
+    #print(xy[point])
+
     # Find the relative change in xy to the next point
     [del_x,del_y] = changeInXY(xy[point-1],xy[point])
-    print('moving to point ' + str(point+1) + '/' + str(xy.shape[0]) + '    delta x,y: ['+str(del_x)+', '+str(del_y)+']')
+    #print(del_x,del_y)
+    ###print('moving to point ' + str(point+1) + '/' + str(xy.shape[0]) + '    delta x,y: ['+str(del_x)+', '+str(del_y)+']')
     
     # Find the change in the string length for left and right
     [del_left,del_right] = changeInLength(xy[point-1],xy[point],dm)
-    print('change in string lengths: ['+str(del_left)+', '+str(del_right)+']')
+    print(point,del_left,del_right)
+    #print('change in string lengths: ['+str(del_left)+', '+str(del_right)+']')
 
     # Find the number of steps for each motor
     [steps_left,steps_right] = length2Steps(del_left,del_right,r,motor_steps)
-    print('PI -> ARDUINO: '+str(point+1)+' '+str(steps_left)+' '+str(steps_right))
+    ###print('PI -> ARDUINO: '+str(point+1)+' '+str(steps_left)+' '+str(steps_right))
 
     # Send the steps to the arduino
     #sendMessage2Arduino(point,steps_left,steps_right)
-    ##  remove the line below when using arduino
-    #print('PI -> ARDUINO: '+str(point+1)+' '+str(steps_left)+' '+str(steps_right))
-
+    
 
     # Pause for user input
     #input("Press Enter to continue")    
@@ -166,7 +168,6 @@ for point in range(1,10):   #len(xy)):
     #print()
 
 
-print(xy[0:5])
 # Test for sending messages
 #sendMessage2Arduino(3,-10,10)
 

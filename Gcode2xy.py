@@ -15,11 +15,13 @@ import numpy as np
 #file_name = 'Star-Wars-Yoda.gcode'
 #file_name = 'yoda_from_plotterize.gcode'
 #file_name = 'sitting_cat_outline.gcode'
-file_name = 'tiger_10_4_16_with_unicorn.gcode'
+#file_name = 'tiger_10_4_16_with_unicorn.gcode'
+file_name = 'cat_outline_11_9_16_tsp.gcode'
 
 #file_path = 'DrawingInputFiles/'
-file_path = '/home/pi/Documents/image_gcode_developmen/gcode_files/'
-output_file = file_name[:file_name.find('.')]+'.csv'
+#file_path = '/home/pi/Documents/image_gcode_developmen/gcode_files/'
+file_path = '/home/pi/Documents/drawing_robot/DrawingInputFiles/'
+output_file = file_name[:file_name.find('.')]+'_original.csv'
 
 
 with open(file_path+file_name) as f:
@@ -67,10 +69,11 @@ path = np.array(path)
 ##print(path[0:5][:])
 
 offset = path[0,:]
+print(offset)
 path = path - offset
 
 # Save the path data and export to Raspberry Pi for plotting
-np.savetxt(file_path+output_file,path,delimiter=",")
+np.savetxt(file_path+output_file,path,fmt='%.2f',delimiter=",")
 
 # Plot the xy points
 plt.plot(path[:,0],path[:,1],'.-',path[0][0],path[0][1],'o')
