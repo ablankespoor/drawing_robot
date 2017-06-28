@@ -118,6 +118,9 @@ if __name__ == '__main__':
     set_up_logging()
 
     # Load the path data from the .csv file
+    # The desired drawing can be selected in load_my_file.py code
+    #    - This could be a user input in the future, but that code
+    #    - is a nice list of usable drawings.
     # path: [point, steps_left, steps_right, relative_x, relative_y, x, y]
     path = load_data()
 

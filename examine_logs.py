@@ -84,7 +84,7 @@ if __name__ == '__main__':
     print('Running: examine_logs.py')
     print()
 
-    with open('LogFiles/logfile_2017_04_07_08_16.log', 'r') as f:
+    with open('LogFiles/logfile_2017_06_28_10_25.log', 'r') as f:
         lines = f.readlines()
     
     # Extract the differences in time samples

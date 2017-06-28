@@ -8,11 +8,11 @@ def file_namer(dot_extension):
     #file_name = 'PelotonLinkLogo.gcode'
     #file_name = 'cat_outline_from_unicorn'
     #file_name = 'circle_from_unicorn.gcode'
-    #file_name = 'Star-Wars-Yoda'
+    file_name = 'Star-Wars-Yoda'
     #file_name = 'yoda_from_plotterize.gcode'
     #file_name = 'sitting_cat_outline.gcode'
     #file_name = 'tiger_10_4_16_with_unicorn.gcode'
-    file_name = 'cat_outline_11_9_16_tsp'
+    #file_name = 'cat_outline_11_9_16_tsp'
 
     ###print('loading data from: '+file_name+dot_extension)
 

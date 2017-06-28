@@ -161,7 +161,7 @@ if __name__ == '__main__':
     np.savetxt(file_path+output_file,step_data,fmt='%.2f',delimiter=",   ")
 
     # Plot the trajectory
-    #plotter(path)
+    plotter(path)
 
 
 
